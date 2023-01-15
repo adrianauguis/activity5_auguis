@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -43,14 +44,16 @@ class _HomePageState extends State<HomePage> {
           image!=null?Image.file(image!,width: 200,height: 200):const Icon(Icons.person),
           const SizedBox(height: 10),
           ElevatedButton(
-              onPressed: (){
-                selectImage(ImageSource.gallery);
+              onPressed: ()async{
+                PermissionStatus filePermission = await Permission.manageExternalStorage.request();
+                if (filePermission == PermissionStatus.granted) selectImage(ImageSource.gallery);
               },
               child: const Text("Select Image")),
           const SizedBox(height: 10),
           ElevatedButton(
-              onPressed: (){
-                selectImage(ImageSource.camera);
+              onPressed: ()async{
+                PermissionStatus filePermission = await Permission.manageExternalStorage.request();
+                if (filePermission == PermissionStatus.granted) selectImage(ImageSource.camera);
               },
               child: const Text("Use Camera")),
         ],
