@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,7 +28,10 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }on PlatformException catch(e){
-      print("Failed to select image $e");
+      if (kDebugMode) {
+        print("Failed to select image $e");
+      }
+
     }
   }
 
@@ -46,14 +50,22 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
               onPressed: ()async{
                 PermissionStatus filePermission = await Permission.manageExternalStorage.request();
-                if (filePermission == PermissionStatus.granted) selectImage(ImageSource.gallery);
+                if (filePermission.isGranted){
+                  selectImage(ImageSource.gallery);
+                }else{
+                  selectImage(ImageSource.gallery);
+                }
               },
               child: const Text("Select Image")),
           const SizedBox(height: 10),
           ElevatedButton(
               onPressed: ()async{
-                PermissionStatus filePermission = await Permission.manageExternalStorage.request();
-                if (filePermission == PermissionStatus.granted) selectImage(ImageSource.camera);
+                var cameraPermission = await Permission.camera.request();
+                if (cameraPermission.isGranted){
+                  selectImage(ImageSource.camera);
+                }else{
+                  selectImage(ImageSource.camera);
+                }
               },
               child: const Text("Use Camera")),
         ],
